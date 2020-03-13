@@ -2,7 +2,7 @@
  *
  * Pentaho Data Integration
  *
- * Copyright (C) 2002-2019 by Hitachi Vantara : http://www.pentaho.com
+ * Copyright (C) 2002-2020 by Hitachi Vantara : http://www.pentaho.com
  *
  *******************************************************************************
  *
@@ -342,8 +342,6 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
           String trClass = evenRow ? "cellTableEvenRow" : "cellTableOddRow"; // alternating row color
           String tdClass = evenRow ? "cellTableEvenRowCell" : "cellTableOddRowCell";
           evenRow = !evenRow; // flip
-          String firstColumn = i == 0 ? "cellTableFirstColumn" : "";
-          String lastColumn = i == transEntries.size() - 1 ? "cellTableLastColumn" : "";
           out.print( "<tr onMouseEnter=\"mouseEnterFunction( this, '" + trClass + "' )\" "
               + "onMouseLeave=\"mouseLeaveFunction( this, '" + trClass + "' )\" "
               + "onClick=\"clickFunction( this, '" + trClass + "' )\" "
@@ -369,7 +367,7 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
           out.print( "<td onMouseEnter=\"mouseEnterFunction( this, '" + tdClass + "' )\" "
               + "onMouseLeave=\"mouseLeaveFunction( this, '" + tdClass + "' )\" "
               + "onClick=\"clickFunction( this, '" + tdClass + "' )\" "
-              + "id=\"cellTableLastCell_" + i + "\" class=\"cellTableCell cellTableLastColumn " + tdClass + "\">" + dateStr.substring( dateStr.indexOf( ' ' ), dateStr.length() ) + "</td>" );
+              + "id=\"cellTableLastCell_" + i + "\" class=\"cellTableCell cellTableLastColumn " + tdClass + "\">" + ( trans.getLogDate() == null ? "-" : dateStr.substring( dateStr.indexOf( ' ' ) ) ) + "</td>" );
           out.print( "</tr>" );
         }
         out.print( "</table></table>" );
@@ -448,7 +446,7 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
           out.print( "<td onMouseEnter=\"mouseEnterFunction( this, '" + tdClass + "' )\" "
               + "onMouseLeave=\"mouseLeaveFunction( this, '" + tdClass + "' )\" "
               + "onClick=\"clickFunction( this, '" + tdClass + "' )\" "
-              + "id=\"j-cellTableLastCell_" + i + "\" class=\"cellTableCell cellTableLastColumn " + tdClass + "\">" + dateStr.substring( dateStr.indexOf( ' ' ), dateStr.length() ) + "</td>" );
+              + "id=\"j-cellTableLastCell_" + i + "\" class=\"cellTableCell cellTableLastColumn " + tdClass + "\">" + ( job.getLogDate() == null ? "-" : dateStr.substring( dateStr.indexOf( ' ' ) ) ) + "</td>" );
           out.print( "</tr>" );
         }
         out.print( "</table></table>" );
@@ -473,7 +471,7 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
       //
       SlaveServerConfig serverConfig = getTransformationMap().getSlaveServerConfig();
       if ( serverConfig != null ) {
-        String maxLines = "";
+        String maxLines;
         if ( serverConfig.getMaxLogLines() == 0 ) {
           maxLines = BaseMessages.getString( PKG, "GetStatusServlet.NoLimit" );
         } else {
@@ -485,7 +483,7 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
 
         // The max age of log lines
         //
-        String maxAge = "";
+        String maxAge;
         if ( serverConfig.getMaxLogTimeoutMinutes() == 0 ) {
           maxAge = BaseMessages.getString( PKG, "GetStatusServlet.NoLimit" );
         } else {
@@ -497,7 +495,7 @@ public class GetStatusServlet extends BaseHttpServlet implements CartePluginInte
 
         // The max age of stale objects
         //
-        String maxObjAge = "";
+        String maxObjAge;
         if ( serverConfig.getObjectTimeoutMinutes() == 0 ) {
           maxObjAge = BaseMessages.getString( PKG, "GetStatusServlet.NoLimit" );
         } else {
